@@ -1,0 +1,268 @@
+{
+	"version": "0.1.0",
+
+	"statuses": [
+		{
+			"id": "status_palm_force",
+			"loc": {
+				"name": "loc_status_palm_force_name",
+				"desc": "loc_status_palm_force_desc"
+			},
+			"default_duration_turns": 3,
+			"expire_at": "turn_end",
+			"tags": ["resource", "palm"]
+		},
+		{
+			"id": "status_sword_qi",
+			"loc": { "name": "loc_status_sword_qi_name" },
+			"default_duration_turns": 3,
+			"expire_at": "turn_end",
+			"tags": ["resource", "sword"]
+		},
+		{
+			"id": "status_regeneration",
+			"loc": { "name": "loc_status_regeneration_name" },
+			"default_duration_turns": 2,
+			"expire_at": "turn_end",
+			"tags": ["buff", "healing"]
+		},
+		{
+			"id": "status_stun",
+			"loc": { "name": "loc_status_stun_name" },
+			"default_duration_turns": 1,
+			"expire_at": "turn_start",
+			"tags": ["control"]
+		}
+	],
+
+	"techniques": [
+		{
+			"id": "technique_double_pulse_cutting_palm",
+			"loc": { "name": "loc_technique_double_pulse_cutting_palm_name" },
+			"tags": ["palm", "melee"],
+
+			"effects": [
+				{
+					"id": "consume_pf",
+					"kind": "consume_status",
+					"target": "self",
+					"status_id": "status_palm_force",
+					"stacks": "all"
+				},
+
+				{
+					"id": "first_strike",
+					"kind": "deal_damage",
+					"target": "enemy:single",
+					"profile": { "mystical": 0.05, "physical": 0.95, "spiritual": 0.0 },
+
+					// power = (myst_atk*0.05 + phys_atk*0.95) * 2.0
+					"value": {
+						"kind": "atk_mix",
+						"mix": { "mystical": 0.05, "physical": 0.95, "spiritual": 0.0 },
+						"scale": 2.0
+					},
+
+					// local modifier: multiply THIS HIT by (1 + rate * consumed_stacks(status_id))
+					"mods": [
+						{
+							"scope": "damage_mul",
+							"mode": "mul",
+							"value": {
+								"kind": "bonus_from_consumed",
+								"status_id": "status_palm_force",
+								"rate": 0.1
+							}
+						}
+					]
+				},
+
+				{
+					"id": "second_strike",
+					"kind": "deal_damage",
+					"target": "enemy:single",
+					"profile": { "mystical": 0.05, "physical": 0.95, "spiritual": 0.0 },
+					"value": {
+						"kind": "atk_mix",
+						"mix": { "mystical": 0.05, "physical": 0.95, "spiritual": 0.0 },
+						"scale": 1.0
+					}
+				},
+
+				{
+					"id": "recoil",
+					"kind": "lose_hp",
+					"target": "self",
+					"value": { "kind": "pct_max_hp", "value": 0.05 }
+				}
+			]
+		},
+
+		{
+			"id": "technique_sword_focus",
+			"loc": { "name": "loc_technique_sword_focus_name" },
+			"tags": ["sword", "buff"],
+
+			"effects": [
+				{
+					"id": "gain_sword_qi",
+					"kind": "apply_status",
+					"target": "self",
+					"status_id": "status_sword_qi",
+					"stacks": 2,
+					"duration_turns": 3
+				},
+				{
+					"id": "gain_qi",
+					"kind": "gain_resource_pct",
+					"target": "self",
+					"resource": "energy",
+					"value": 15
+				}
+			]
+		},
+
+		{
+			"id": "technique_regenerative_breath",
+			"loc": { "name": "loc_technique_regenerative_breath_name" },
+			"tags": ["healing"],
+
+			"effects": [
+				{
+					"id": "apply_regen",
+					"kind": "apply_status",
+					"target": "self",
+					"status_id": "status_regeneration",
+					"stacks": 1,
+					"duration_turns": 3 // OPTIONAL: overrides default duration
+				},
+
+				{
+					"id": "increase_base_max_hp",
+					"kind": "scale_stat_base",
+					"target": "self",
+					"stat": "max_hp",
+					"scale": 0.08
+				},
+				{
+					"id": "heal_hp", // Heals for 10% of current HP
+					"kind": "scale_stat",
+					"target": "self",
+					"stat": "hp",
+					"scale": 0.1
+				}
+			]
+		},
+
+		{
+			"id": "technique_stunning_palm",
+			"loc": { "name": "loc_technique_stunning_palm_name" },
+			"tags": ["palm", "control"],
+
+			"effects": [
+				{
+					"id": "hit",
+					"kind": "deal_damage_profile_scaled",
+					"target": "enemy:single",
+					"profile": { "mystical": 0.0, "physical": 1.0, "spiritual": 0.0 },
+					"scale": 1.1
+				},
+				{
+					"id": "apply_stun_if_hit",
+					"kind": "if",
+					"trigger": { "kind": "is_hit_success", "effect_id": "hit" },
+					"effects": [
+						{
+							"id": "stun",
+							"kind": "apply_status",
+							"target": "enemy:single",
+							"status_id": "status_stun",
+							"stacks": 1,
+							"duration_turns": 1
+						}
+					]
+				}
+			]
+		},
+
+		{
+			"id": "technique_multi_strike_example",
+			"loc": { "name": "loc_technique_multi_strike_example_name" },
+			"tags": ["example"],
+
+			"effects": [
+				{
+					"id": "repeat_hits",
+					"kind": "repeat",
+					"times": 3,
+					"effects": [
+						{
+							"kind": "deal_damage_profile_scaled",
+							"target": "enemy:single",
+							"profile": { "mystical": 0.0, "physical": 1.0, "spiritual": 0.0 },
+							"scale": 0.6
+						}
+					]
+				}
+			]
+		}
+	],
+
+	// minimal reference so modders know what's legal (optional but helpful)
+	"reference": {
+		"target_sugar": [
+			"self",
+			"enemy:single",
+			"enemy:all",
+			"ally:single",
+			"ally:all",
+			"enemy:random(n)"
+		],
+		"effect_kinds": [
+			"consume_status",
+			"apply_status",
+			"deal_damage",
+			"deal_damage_profile",
+			"deal_damage_profile_scaled",
+			"scale_stat_base",
+			"scale_stat",
+			"heal",
+			"gain_resource",
+			"spend_resource",
+			"lose_hp",
+			"if",
+			"repeat"
+		],
+		"modifier_scopes": [
+			"damage_mul",
+			"damage_add",
+			"defense_mul",
+			"defense_add",
+			"skip_turn"
+		],
+		"expr_kinds": [
+			"number (literal const)",
+			"stat",
+			"stat_mul",
+			"atk_mix",
+			"add",
+			"mul",
+			"min",
+			"max",
+			"clamp",
+			"pct_max_hp",
+			"consumed_stacks",
+			"bonus_from_consumed"
+		],
+		"cond_kinds": [
+			"all",
+			"any",
+			"not",
+			"compare",
+			"has_status",
+			"consumed_this_action",
+			"technique_has_tag",
+			"last_hit_succeeded"
+		]
+	}
+}

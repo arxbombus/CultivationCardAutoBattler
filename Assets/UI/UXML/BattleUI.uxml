@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/BattleUI.uss?fileID=7433441132597879392&amp;guid=20b5ed29eedf543a4ba0759dde64d741&amp;type=3#BattleUI"/>
+    <ui:VisualElement class="root">
+        <ui:VisualElement name="hud-container" class="hud-container">
+            <ui:Label name="RoundLabel" text="Round: -" class="hud-label"/>
+            <ui:Label name="TurnLabel" text="Turn: -" class="hud-label"/>
+            <ui:Label name="APLabel" text="AP: -" class="hud-label"/>
+            <ui:Label name="AStatusLabel" text="A HP/Qi: -" class="hud-label"/>
+            <ui:Label name="BStatusLabel" text="B HP/Qi: -" class="hud-label"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="button-container" class="button-container">
+            <ui:Button name="InitButton" text="Init Battle"/>
+            <ui:Button name="NextActionButton" text="Next Action"/>
+            <ui:Button name="NextRoundButton" text="Force Next Round"/>
+            <ui:Button name="ResetButton" text="Reset"/>
+        </ui:VisualElement>
+        <ui:VisualElement class="slots-container">
+            <ui:Label text="Slots A Bullshit:"/>
+            <ui:VisualElement name="SlotsAContainer" class="slots-row"/>
+            <ui:Label text="Slots B:"/>
+            <ui:VisualElement name="SlotsBContainer" class="slots-row"/>
+        </ui:VisualElement>
+        <ui:VisualElement class="log-container">
+            <ui:Button name="ClearLogButton" text="Clear Log"/>
+            <ui:ScrollView name="LogScroll">
+                <ui:Label name="LogLabel" text="(log output)"/>
+            </ui:ScrollView>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

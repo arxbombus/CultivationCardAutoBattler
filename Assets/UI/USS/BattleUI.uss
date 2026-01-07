@@ -1,0 +1,60 @@
+/* Root container */
+.root {
+    flex-direction: column;
+    padding: 50px;
+    justify-content: flex-start;
+}
+
+/* HUD group */
+.hud-container {
+    flex-direction: column;
+    padding-bottom: 8px;
+    background-color: rgba(154, 33, 33, 0.5);
+}
+
+.hud-label {
+    font-size: 14px;
+    color: white;
+    margin-bottom: 2px;
+}
+
+/* Buttons (vertical stack) */
+.button-container {
+    flex-direction: column;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.button-container > Button {
+    margin-bottom: 4px;
+}
+
+/* Slots */
+.slots-container {
+    flex-direction: column;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.slots-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+/* Combat Log */
+.log-container {
+    flex-direction: column;
+    padding-top: 6px;
+}
+
+#LogScroll {
+    height: 140px;
+}
+
+/* Basic label in log */
+#LogLabel {
+    font-size: 12px;
+    white-space: normal;
+    color: white;
+}

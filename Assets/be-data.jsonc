@@ -1,0 +1,100 @@
+{
+	"phases": [
+		"RoundStart",
+		"RoundEnd",
+		"TurnStart",
+		"TurnEnd",
+		"ActionStart",
+		"ActionEnd"
+	],
+	"statusTypes": [], // Do we really need this?
+	"statuses": [
+		{
+			"id": "PalmForce",
+			"loc": {
+				"name": "loc_s_palm_force_name",
+				"desc": "loc_s_palm_force_desc",
+				"effectDesc": "loc_s_palm_force_effect_desc"
+			},
+			"maxStacks": null,
+			"duration": null,
+			"effects": []
+		}
+	],
+	"manuals": [],
+	"techniques": [
+		{
+			// Double Pulse Cutting Palm.
+			// 5% Mystical, 95% Physical.
+			// Heavy hitting palm strike that deals 2 strikes but damages oneself.
+			// Consumes all `PalmForce` stacks to deal 10% extra damage per stack consumed for the first strike.
+			// Damage Power: (200% ATK, 100% ATK).
+			// Self Damage: 5% Max HP.
+			// Cost: 3 ENERGY.
+			"id": "TechniqueDoublePulseCuttingPalm",
+			"loc": {
+				"name": "loc_t_pulse_cutting_palm_name",
+				"desc": "loc_t_pulse_cutting_palm_desc",
+				"effectDesc": "loc_t_pulse_cutting_palm_effect_desc"
+			},
+			"parent": null,
+			"categories": ["Melee", "Palm"],
+			"effects": [
+				{
+					"index": 0,
+					"type": "ConsumeStatus",
+					"targets": ["Self"],
+					"params": {
+						"statusId": "PalmForce",
+						"stacks": "all"
+					},
+					"subEffects": [
+						{
+							"type": "SetVar",
+							"params": {
+								"target": "Self",
+								"varName": "ConsumedStatusStacks",
+								"source": "ConsumedStatusStacks"
+							}
+						}
+					]
+				},
+				{
+					"type": "Damage",
+					"targets": ["EnemySingle"],
+					"params": {
+						"profile": {
+							"mystical": 0.05,
+							"physical": 0.95,
+							"spiritual": 0.0
+						},
+						"baseDamage": 0, // Int
+						"modifiers": [
+							// 250% base MysticalAttack * 0.05 + 250% base PhysicalAttack * 0.95
+							{
+								"source": "Attack",
+								"attribute": "MysticalAttack",
+								"scaling": 2.5,
+								"type": "Flat"
+							},
+							{
+								"source": "Attack",
+								"attribute": "PhysicalAttack",
+								"scaling": 2.5,
+								"type": "Flat"
+							}
+						],
+						"dynamicModifiers": [
+							{
+								"source": "ConsumedStatusStacks",
+								"statusId": "PalmForce",
+								"perStackScaling": 0.1,
+								"type": "Flat"
+							}
+						]
+					}
+				}
+			]
+		}
+	]
+}
